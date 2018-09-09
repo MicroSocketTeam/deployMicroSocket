@@ -21,6 +21,7 @@ type Msf struct {
 }
 
 func NewMsf(msfEvent MsfEventer) *Msf {
+	util.DealBaseCli()
 	return &Msf{
 		SessionMaster: NewSessonM(),
 		EventPool:     NewRouterMap(),
