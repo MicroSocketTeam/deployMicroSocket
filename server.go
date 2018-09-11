@@ -14,14 +14,17 @@ type MsfEventer interface {
 	OnMessage(fd uint32, msg map[string]string) bool
 }
 
+type TcpFactory struct {
+
+}
+
 type Msf struct {
 	EventPool     *RouterMap
 	SessionMaster *SessionM
 	MsfEvent      MsfEventer
 }
 
-func NewMsf(msfEvent MsfEventer) *Msf {
-	util.DealBaseCli()
+func (tcpF TcpFactory) NewMsf(msfEvent MsfEventer) *Msf {
 	return &Msf{
 		SessionMaster: NewSessonM(),
 		EventPool:     NewRouterMap(),
