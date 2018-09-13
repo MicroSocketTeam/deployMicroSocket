@@ -4,60 +4,61 @@ import (
 	"fmt"
 	"log"
 	msf "microSocket"
-	"net"
 	"strconv"
 )
 
-var ser = msf.NewMsf(&event{})
+var wbsSer = msf.NewWebskt(&wbsEvent{})
 
 //框架事件
-type event struct {
+type wbsEvent struct {
 }
 
 //客户端握手成功事件
-func (this event) OnHandel(fd uint32, conn net.Conn) bool {
+func (this wbsEvent) OnHandel(fd string) bool {
 	log.Println(fd, "链接成功类")
 	return true
 }
 
 //断开连接事件
-func (this event) OnClose(fd uint32) {
+func (this wbsEvent) OnClose(fd string) {
 	log.Println(fd, "链接断开类")
 }
 
 //接收到消息事件
-func (this event) OnMessage(fd uint32, msg map[string]string) bool {
+func (this wbsEvent) OnMessage(fd string, msg string) bool {
+	log.Println(fd, msg)
 	return true
 }
 
 //---------------------------------------------------------------------
 //框架业务逻辑
-type WbsTest struct {
+type Test struct {
 }
 
-func (this WbsTest) Default() {
+func (this Test) Default() {
 	fmt.Println("is default")
 }
 
-func (this WbsTest) BeforeRequest(data map[string]string) bool {
+func (this Test) BeforeRequest(data map[string]string) bool {
 	log.Println("before")
 	return true
 }
 
-func (this WbsTest) AfterRequest(data map[string]string) {
+func (this Test) AfterRequest(data map[string]string) {
 	log.Println("after")
 }
 
-func (this WbsTest) Hello(data map[string]string) {
+func (this Test) Hello(data map[string]string) {
 	fd, _ := strconv.Atoi(data["fd"])
 	log.Println("收到消息了")
-	ser.SessionMaster.WriteByid(uint32(fd), "Hello")
+	wbsSer.SessionMaster.WriteByid(uint32(fd), "Hello")
 }
 
 //---------------------------------------------------------------------
 
 func main() {
 	log.SetFlags(log.Lshortfile | log.LstdFlags | log.Llongfile)
-	ser.EventPool.Register("test", &WbsTest{})
-	ser.Listening("127.0.0.1:8565")
+
+	wbsSer.EventPool.Register("test", &Test{})
+	wbsSer.Listening("127.0.0.1:9501")
 }
