@@ -5,6 +5,7 @@ import (
 	"log"
 	msf "microSocket"
 	"strconv"
+	"microSocket/util"
 )
 
 var wbsSer = msf.NewWebskt(&wbsEvent{})
@@ -58,7 +59,7 @@ func (this Test) Hello(data map[string]string) {
 
 func main() {
 	log.SetFlags(log.Lshortfile | log.LstdFlags | log.Llongfile)
-
+	util.DealBaseCli()
 	wbsSer.EventPool.Register("test", &Test{})
 	wbsSer.Listening("127.0.0.1:9501")
 }
